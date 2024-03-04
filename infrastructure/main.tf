@@ -62,18 +62,20 @@ resource "aws_route53_zone" "microservice_dns" {
   name = "microservice.local"
 }
 
+resource "aws_iam_instance_profile" "microservice_profile" {
+  name = "microservice_profile"
+  role = aws_iam_role.microservice_role.name
+}
+
 resource "aws_instance" "microservice_instance" {
-  ami                    = "ami-0c02fb55956c7d316"
+  ami                    = "ami-0440d3b780d96b29d"
   instance_type          = "t2.micro"
   subnet_id              = aws_subnet.public.id
   vpc_security_group_ids = [aws_security_group.microservice.id]
 
-  iam_instance_profile = {
-    name = aws_iam_role.microservice_role.name
-  }
+  iam_instance_profile = aws_iam_instance_profile.microservice_profile.name
 
   tags = {
     Name = "MicroserviceInstance"
   }
 }
-
